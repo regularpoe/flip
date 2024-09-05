@@ -1,4 +1,4 @@
-use base64;
+use base64::{engine::general_purpose, Engine as _};
 use clipboard::{ClipboardContext, ClipboardProvider};
 use rdev::{listen, Event, EventType, Key};
 
@@ -8,7 +8,7 @@ use std::thread;
 fn encode_clipboard(ctx: Arc<Mutex<ClipboardContext>>) {
     let mut ctx = ctx.lock().unwrap();
     if let Ok(content) = ctx.get_contents() {
-        let encoded_content = base64::encode(content);
+        let encoded_content = general_purpose::STANDARD.encode(content);
         ctx.set_contents(encoded_content).unwrap();
         println!("Clipboard content encoded to Base64!");
     } else {
